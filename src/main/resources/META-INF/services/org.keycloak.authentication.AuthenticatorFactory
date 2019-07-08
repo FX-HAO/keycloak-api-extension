@@ -1,0 +1,2 @@
+org.keycloak.examples.authenticator.spi.PhoneNumberAuthenticatorFactory
+org.keycloak.examples.authenticator.spi.VerificationCodeAuthenticatorFactory
