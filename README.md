@@ -4,6 +4,8 @@ This provides you many APIs as follows:
 
 - validate-otp-api
 
+## Build
+
 To install the library one has to:
 
 * Build and package the project:
