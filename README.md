@@ -25,7 +25,7 @@ To install the library one has to:
 
 Validate OTP
 
-`POST /{realm}/api-extension/users/{id}/otp`
+`POST /{realm}/keycloak-api-extension/users/{id}/otp`
 
 Parameter
 
