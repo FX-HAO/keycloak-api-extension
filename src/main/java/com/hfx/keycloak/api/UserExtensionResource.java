@@ -8,15 +8,15 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.credential.OTPCredentialModel;
+import org.keycloak.services.ErrorResponse;
 import org.keycloak.services.resources.admin.AdminEventBuilder;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 public class UserExtensionResource {
 
@@ -39,21 +39,37 @@ public class UserExtensionResource {
     }
 
     @POST
-    @Path("otp")
+    @Path("validate-otp")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public void getVerificationCodes(@FormParam("otp") String otp) {
+    public void validateOTP(@FormParam("otp") String otp) {
         if (!user.isEnabled()) {
             throw new UnauthorizedException("Invalid OTP");
         }
 
-        String credentialId = getCredentialProvider(session).getDefaultCredential(session, realm, user).getId();
+        OTPCredentialModel credential = getCredentialProvider(session).getDefaultCredential(session, realm, user);
+        if (credential == null) {
+            throw new UnauthorizedException("Invalid OTP");
+        }
+        String credentialId = credential.getId();
         boolean valid = getCredentialProvider(session).isValid(realm, user,
                 new UserCredentialModel(credentialId, getCredentialProvider(session).getType(), otp));
         if (!valid) {
             throw new UnauthorizedException("Invalid OTP");
         }
         return;
+    }
+
+    @GET
+    @Path("if-otp-exists")
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response ifOTPExists() {
+        OTPCredentialModel credential = getCredentialProvider(session).getDefaultCredential(session, realm, user);
+        if (!user.isEnabled() || credential == null) {
+            return ErrorResponse.exists("OTP does not exist!");
+        }
+        return Response.noContent().build();
     }
 
     public OTPCredentialProvider getCredentialProvider(KeycloakSession session) {

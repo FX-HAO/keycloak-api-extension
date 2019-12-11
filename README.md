@@ -3,6 +3,7 @@
 This provides you many APIs as follows:
 
 - validate-otp-api
+- check-if-otp-exists-api
 
 ## Build
 
@@ -21,11 +22,15 @@ To install the library one has to:
 > $KEYCLOAK_HOME/bin/jboss-cli.sh --file=cli/keycloak-api-extension-config.cli
 ```
 
-## validate-otp-api
+## APIs
+
+list as below:
+
+### validate-otp-api
 
 Validate OTP
 
-`POST /{realm}/keycloak-api-extension/users/{id}/otp`
+`POST /{realm}/keycloak-api-extension/users/{id}/validate-otp`
 
 Parameter
 
@@ -34,6 +39,25 @@ Parameter
 | Path | id (_required_) | User id | string |
 | Path | realm (_required_) | realm name (not id!) | string |
 | Body | otp (_required_) | otp | string |
+
+Responses
+
+| HTTP Code | Description | Schema |
+|---|---|---|
+| 204 | success | No Content |
+
+### check-if-otp-exists-api
+
+Check if otp exists
+
+`GET /{realm}/keycloak-api-extension/users/{id}/if-otp-exists`
+
+Parameter
+
+| Type | Name | Description | Schema |
+|---|---|---|---|
+| Path | id (_required_) | User id | string |
+| Path | realm (_required_) | realm name (not id!) | string |
 
 Responses
 

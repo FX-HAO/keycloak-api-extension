@@ -1,8 +1,6 @@
 package com.hfx.keycloak.api;
 
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnauthorizedException;
 import org.keycloak.common.ClientConnection;
@@ -44,20 +42,14 @@ public class ExtensionResource {
     private HttpHeaders httpHeaders;
 
     @Context
-    protected HttpRequest request;
-
-    @Context
-    protected HttpResponse response;
-
-    @Context
     protected KeycloakSession session;
 
     public ExtensionResource(KeycloakSession session) {
         this.session = session;
         this.realm = session.getContext().getRealm();
         this.clientConnection = session.getContext().getConnection();
-
         this.httpHeaders = session.getContext().getRequestHeaders();
+
         this.tokenManager = new TokenManager();
         this.authManager = new AppAuthManager();
     }
