@@ -44,7 +44,7 @@ Responses
 
 | HTTP Code | Description | Schema |
 |---|---|---|
-| 204 | success | No Content |
+| 200 | success | {"status": true} |
 
 ### check-if-otp-exists-api
 
@@ -63,4 +63,4 @@ Responses
 
 | HTTP Code | Description | Schema |
 |---|---|---|
-| 204 | success | No Content |
+| 200 | success | {"status": true} |

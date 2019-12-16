@@ -42,22 +42,22 @@ public class UserExtensionResource {
     @Path("validate-otp")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public void validateOTP(@FormParam("otp") String otp) {
+    public Response validateOTP(@FormParam("otp") String otp) {
         if (!user.isEnabled()) {
-            throw new UnauthorizedException("Invalid OTP");
+            return Response.status(Response.Status.OK).entity("{\"status\": false}").build();
         }
 
         OTPCredentialModel credential = getCredentialProvider(session).getDefaultCredential(session, realm, user);
         if (credential == null) {
-            throw new UnauthorizedException("Invalid OTP");
+            return Response.status(Response.Status.OK).entity("{\"status\": false}").build();
         }
         String credentialId = credential.getId();
         boolean valid = getCredentialProvider(session).isValid(realm, user,
                 new UserCredentialModel(credentialId, getCredentialProvider(session).getType(), otp));
         if (!valid) {
-            throw new UnauthorizedException("Invalid OTP");
+            return Response.status(Response.Status.OK).entity("{\"status\": false}").build();
         }
-        return;
+        return Response.status(Response.Status.OK).entity("{\"status\": true}").build();
     }
 
     @GET
@@ -67,9 +67,9 @@ public class UserExtensionResource {
     public Response ifOTPExists() {
         OTPCredentialModel credential = getCredentialProvider(session).getDefaultCredential(session, realm, user);
         if (!user.isEnabled() || credential == null) {
-            return ErrorResponse.exists("OTP does not exist!");
+            return Response.status(Response.Status.OK).entity("{\"status\": false}").build();
         }
-        return Response.noContent().build();
+        return Response.status(Response.Status.OK).entity("{\"status\": true}").build();
     }
 
     public OTPCredentialProvider getCredentialProvider(KeycloakSession session) {
